@@ -3,8 +3,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * A simple console application for adding, displaying, and searching employees.
- * Employee records are kept in memory and are cleared when the program exits.
+ * A simple console application for managing employee records.
+ * Records are kept in memory and are cleared when the program exits.
  */
 public class EmployeeManagement {
     private static final Map<Integer, Employee> employees = new LinkedHashMap<>();
@@ -18,7 +18,9 @@ public class EmployeeManagement {
             System.out.println("1. Add employee");
             System.out.println("2. Display all employees");
             System.out.println("3. Search employee by ID");
-            System.out.println("4. Exit");
+            System.out.println("4. Update employee details");
+            System.out.println("5. Delete employee");
+            System.out.println("6. Exit");
 
             int choice = readInt("Choose an option: ");
             switch (choice) {
@@ -32,11 +34,17 @@ public class EmployeeManagement {
                     searchEmployee();
                     break;
                 case 4:
+                    updateEmployee();
+                    break;
+                case 5:
+                    deleteEmployee();
+                    break;
+                case 6:
                     running = false;
                     System.out.println("Goodbye!");
                     break;
                 default:
-                    System.out.println("Invalid option. Please choose 1-4.");
+                    System.out.println("Invalid option. Please choose 1-6.");
             }
         }
         scanner.close();
@@ -80,6 +88,33 @@ public class EmployeeManagement {
         }
     }
 
+    private static void updateEmployee() {
+        int id = readInt("Enter employee ID to update: ");
+        Employee employee = employees.get(id);
+        if (employee == null) {
+            System.out.println("No employee found with ID " + id + ".");
+            return;
+        }
+
+        System.out.println("Enter the updated employee details:");
+        String name = readNonEmpty("Name: ");
+        String department = readNonEmpty("Department: ");
+        double salary = readSalary("Salary: ");
+
+        employees.put(id, new Employee(id, name, department, salary));
+        System.out.println("Employee details updated successfully.");
+    }
+
+    private static void deleteEmployee() {
+        int id = readInt("Enter employee ID to delete: ");
+        Employee removed = employees.remove(id);
+        if (removed == null) {
+            System.out.println("No employee found with ID " + id + ".");
+        } else {
+            System.out.println("Employee deleted successfully.");
+        }
+    }
+
     private static int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -111,7 +146,7 @@ public class EmployeeManagement {
                     return salary;
                 }
             } catch (NumberFormatException e) {
-                // Show the shared validation message below.
+                // Show the validation message below.
             }
             System.out.println("Please enter a valid non-negative salary.");
         }
